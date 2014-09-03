@@ -24,15 +24,17 @@ public class WeatherService {
       StringBuilder sb = new StringBuilder(report.getAreaDescription());
       sb.append(":\n");
       sb.append(report.getSummary());
-      sb.append(". ");
+      sb.append(", ");
       int t  = report.getFahrenheit();
       int hi = (int)calcHeatIndex(t, report.getHumidity());
       sb.append(t);
+      sb.append(" \u00B0F");
       if (hi != t) {
-         sb.append(" \u00B0F; feels like ");
+         sb.append(" (feels like ");
          sb.append(hi);
+         sb.append(" \u00B0F)");
       }
-      sb.append(" \u00B0F. Wind ");
+      sb.append(". Wind ");
       sb.append(report.getWind());
       sb.append(".\n");
       return sb.toString();
