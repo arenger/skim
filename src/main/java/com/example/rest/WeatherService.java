@@ -21,27 +21,13 @@ public class WeatherService {
    public String makeSummary(Report report) {
       LOG.info("Making summary for " + report.getAreaDescription());
 
-      StringBuilder sb = new StringBuilder(report.getAreaDescription());
-      sb.append(":\n");
-      sb.append(report.getSummary());
-      sb.append(", ");
-      int t  = report.getFahrenheit();
-      int hi = (int)calcHeatIndex(t, report.getHumidity());
-      sb.append(t);
-      sb.append(" \u00B0F");
-      if (hi != t) {
-         sb.append(" (feels like ");
-         sb.append(hi);
-         sb.append(" \u00B0F)");
-      }
-      sb.append(". Wind ");
-      sb.append(report.getWind());
-      sb.append(".\n");
-      return sb.toString();
+      return String.format("%s: %s. Feels like %d\u00B0F. Wind at %s.\n",
+         report.getAreaDescription(), report.getSummary(),
+         (int)calcHeatIndex(report.getFahrenheit(), report.getHumidity()),
+         report.getWind());
    }
 
-   // attempted port from
-   // http://www.hpc.ncep.noaa.gov/html/heatindex.shtml
+   // copied from http://www.hpc.ncep.noaa.gov/html/heatindex.shtml
    public static double calcHeatIndex(double tempF, double relH) {
       double hi = tempF;
       if (relH > 100) {
