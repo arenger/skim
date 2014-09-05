@@ -1,0 +1,32 @@
+#!/usr/bin/perl
+
+$ws3 = "http://localhost:8080/skim/weather/summary";
+
+sub fakencode {
+   $_ = shift;
+   s/,/%2C/g;
+   s/ /\+/g;
+   return $_;
+}
+
+if (@ARGV < 1) {
+   print "expected zipcode or city, state\n";
+   exit 1;
+}
+
+$str = join(' ',@ARGV);
+# use a wget call to lookup the lat/lon coordinates
+$url = "http://forecast.weather.gov/zipcity.php?inputstring=$str";
+$_ = `wget --max-redirect=0 '$url' 2>&1`;
+
+# rewrite the url to get the xml version of the data
+if (/Location: (.*?\?).+(lat=.*?) /) {
+   $url = $1.$2."&unit=0&lg=english&FcstType=dwml";
+} else {
+   die "brittle code";
+}
+
+print "$url\n\n";
+exec("curl $url");
+#exec("curl $url | curl -X POST --header 'Content-Type: application/xml' ".
+#     "--data-binary @- '$ws3'");
