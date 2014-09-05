@@ -22,9 +22,9 @@ public class WeatherService {
       LOG.info("Making summary for " + report.getAreaDescription());
 
       return String.format("%s: %s. Feels like %d\u00B0F. Wind at %s.\n",
-         report.getAreaDescription(), report.getSummary(),
+         report.getAreaDescription().trim(), report.getSummary().trim(),
          (int)calcHeatIndex(report.getFahrenheit(), report.getHumidity()),
-         report.getWind());
+         report.getWind().trim());
    }
 
    // copied from http://www.hpc.ncep.noaa.gov/html/heatindex.shtml
