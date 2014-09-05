@@ -16,7 +16,7 @@
             <xsl:value-of select="concat(round(/dwml/data[@type='current observations']/parameters/wind-speed[@type='sustained']/value * 1.152), ' mph')"/>
          </wind>
          <summary>
-            <xsl:value-of select="trim(/dwml/data[@type='current observations']/parameters/weather/weather-conditions[@weather-summary]/@weather-summary)"/>
+            <xsl:value-of select="/dwml/data[@type='current observations']/parameters/weather/weather-conditions[@weather-summary]/@weather-summary"/>
          </summary>
       </report>
    </xsl:template>

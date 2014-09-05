@@ -8,6 +8,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +19,18 @@ public class WeatherAdapter implements Filter {
       = LoggerFactory.getLogger(WeatherAdapter.class);
 
    @Override
-   public void init(FilterConfig arg0) throws ServletException {
-      LOG.info("WeatherAdapter initialized");
-   }
+   public void init(FilterConfig arg0) throws ServletException {}
 
    @Override
    public void doFilter(ServletRequest req, ServletResponse res,
          FilterChain chain) throws IOException, ServletException {
-      LOG.info("WeatherAdapter invoked");
-      chain.doFilter(req, res);
+      if (req instanceof HttpServletRequest) {
+         chain.doFilter(
+            new XslReqWrapper((HttpServletRequest)req), res);
+      } else {
+         LOG.info("Not a HttpServletRequest");
+         chain.doFilter(req, res);
+      }
    }
 
    @Override
