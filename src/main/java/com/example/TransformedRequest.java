@@ -24,8 +24,8 @@ public class TransformedRequest extends HttpServletRequestWrapper {
    private final InputStream xmlStream;
 
    public TransformedRequest(Transformer transformer,
-      HttpServletRequest request) throws IOException,
-      ParserConfigurationException, SAXException, TransformerException {
+      HttpServletRequest request) throws IOException, SAXException,
+      ParserConfigurationException, TransformerException {
       super(request);
 
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

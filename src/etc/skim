@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-$ws3 = "http://localhost:8080/skim/weather/summary";
+$ws3 = "http://localhost:8080/skim/weather/noaa";
 
 sub fakencode {
    $_ = shift;

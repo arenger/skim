@@ -16,11 +16,23 @@ public class WeatherService {
       = LoggerFactory.getLogger(WeatherService.class);
 
    @POST
-   @Path("/summary")
+   @Path("/noaa")
    @Consumes("application/xml")
+   public String noaa(Report report) {
+      return makeSummary(report);
+   }
+
+   @POST
+   @Path("/basic")
+   @Consumes("application/xml")
+   public String basic(Report report) {
+      //same as reportBasic, except that this one has a filter applied
+      //in web.xml while reportBasic does not.
+      return makeSummary(report);
+   }
+
    public String makeSummary(Report report) {
       LOG.info("Making summary for " + report.getAreaDescription());
-
       return String.format("%s: %s. Feels like %d\u00B0F. Wind at %s.\n",
          report.getAreaDescription().trim(), report.getSummary().trim(),
          (int)calcHeatIndex(report.getFahrenheit(), report.getHumidity()),

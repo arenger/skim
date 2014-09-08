@@ -13,6 +13,6 @@
   </filter>
   <filter-mapping>
      <filter-name>WeatherAdapter</filter-name>
-     <url-pattern>/weather/summary</url-pattern>
+     <url-pattern>/weather/noaa</url-pattern>
   </filter-mapping>
 </web-app>

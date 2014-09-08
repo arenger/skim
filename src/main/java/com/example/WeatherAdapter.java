@@ -22,18 +22,39 @@ public class WeatherAdapter implements Filter {
    private static final Logger LOG
       = LoggerFactory.getLogger(WeatherAdapter.class);
 
-   private static Transformer transformer;
+   private String xslPath;
+
+   // Create a Transformer object for every thread
+   private final ThreadLocal<Transformer> localTrans =
+      new ThreadLocal<Transformer>() {
+         @Override protected Transformer initialValue() {
+            Transformer t = null;
+            try {
+               TransformerFactory xFactory = TransformerFactory.newInstance();
+               StreamSource ssrc = new StreamSource(
+                  WeatherAdapter.class.getResourceAsStream(getXslPath()));
+               t = xFactory.newTransformer(ssrc);
+            } catch (TransformerConfigurationException e) {
+               LOG.error("Could not create transformer", e);
+            }
+            return t;
+         }
+      };
+
+   private String getXslPath() {
+      // The xslPath member variable cannot be final, I don't think,
+      // because it is initialized via call to "init", not a constructor.
+      return xslPath;
+   }
 
    @Override
    public void init(FilterConfig config) throws ServletException {
-      try {
-         TransformerFactory xFactory = TransformerFactory.newInstance();
-         StreamSource ssrc = new StreamSource(
-            this.getClass().getResourceAsStream(
-            config.getInitParameter("xslPath")));
-         transformer = xFactory.newTransformer(ssrc);
-      } catch (TransformerConfigurationException e) {
-         throw new ServletException(e);
+      xslPath = config.getInitParameter("xslPath");
+      if (xslPath == null) {
+         throw new ServletException("Expected init-param not set: xslPath");
+      }
+      if (WeatherAdapter.class.getResource(xslPath) == null) {
+         throw new ServletException("Invalid xslPath: " + xslPath);
       }
    }
 
@@ -43,7 +64,7 @@ public class WeatherAdapter implements Filter {
       if (req instanceof HttpServletRequest) {
          try {
             chain.doFilter(new TransformedRequest(
-               transformer, (HttpServletRequest)req), res);
+               localTrans.get(), (HttpServletRequest)req), res);
          } catch (IOException|ServletException e) {
             throw e;
          } catch (Exception e) {
