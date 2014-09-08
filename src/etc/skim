@@ -14,19 +14,21 @@ if (@ARGV < 1) {
    exit 1;
 }
 
-$str = join(' ',@ARGV);
+$str = fakencode(join(' ',@ARGV));
 # use a wget call to lookup the lat/lon coordinates
 $url = "http://forecast.weather.gov/zipcity.php?inputstring=$str";
 $_ = `wget --max-redirect=0 '$url' 2>&1`;
 
-# rewrite the url to get the xml version of the data
-if (/Location: (.*?\?).+(lat=.*?) /) {
-   $url = $1.$2."&unit=0&lg=english&FcstType=dwml";
+# change the redirect-url to get the xml version of the data
+if (/Location: (.*?) /) {
+   $url = $1."&unit=0&lg=english&FcstType=dwml";
 } else {
+   print $_;
    die "brittle code";
 }
 
-print "$url\n\n";
-exec("curl $url");
-#exec("curl $url | curl -X POST --header 'Content-Type: application/xml' ".
-#     "--data-binary @- '$ws3'");
+$t = sprintf("/tmp/.skim%x", int(rand(99999))); #good enough
+system("curl", "-s", "-o", $t, $url);
+system("curl", "-X", "POST", "--header", "Content-Type: application/xml",
+     "--data-binary", '@'.$t, $ws3);
+unlink $t;

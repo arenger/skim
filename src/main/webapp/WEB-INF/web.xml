@@ -6,6 +6,10 @@
   <filter>
      <filter-name>WeatherAdapter</filter-name>
      <filter-class>com.example.WeatherAdapter</filter-class>
+     <init-param>
+       <param-name>xslPath</param-name>
+       <param-value>/skim.xsl</param-value>
+     </init-param>
   </filter>
   <filter-mapping>
      <filter-name>WeatherAdapter</filter-name>
