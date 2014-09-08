@@ -16,18 +16,18 @@ public class WeatherService {
       = LoggerFactory.getLogger(WeatherService.class);
 
    @POST
-   @Path("/noaa")
+   @Path("/basic")
    @Consumes("application/xml")
-   public String noaa(Report report) {
+   public String basic(Report report) {
       return makeSummary(report);
    }
 
    @POST
-   @Path("/basic")
+   @Path("/noaa")
    @Consumes("application/xml")
-   public String basic(Report report) {
-      //same as reportBasic, except that this one has a filter applied
-      //in web.xml while reportBasic does not.
+   public String noaa(Report report) {
+      //same as basic(), except that this one has a filter
+      //applied in web.xml while reportBasic does not.
       return makeSummary(report);
    }
 
